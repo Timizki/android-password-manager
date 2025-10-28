@@ -1,27 +1,82 @@
-# Android Salasanahallinta
+# Android Password Manager - PassTool Compatible
 
-Turvallinen Android-sovellus salasanojen hallintaan, joka tarjoaa modernin käyttöliittymän ja vahvan tietoturvan.
+PassTool-yhteensopiva Android-salasanahallinta, joka ei tallenna salasanoja vaan generoi ne tarvittaessa.
 
-## Ominaisuudet
+## 🔄 TÄRKEÄ MUUTOS (Issue #1)
 
-### 🔐 Tietoturva
-- **AES-256 salaus**: Kaikki salasanat salataan AES-256-algoritmilla
-- **Biometrinen tunnistautuminen**: Sormenjälki- ja kasvojentunnistus
-- **Pääsalasana**: Vahva pääsalasana suojaa kaikkia tietoja
-- **Turvallinen tallennustila**: Android Keystore ja EncryptedSharedPreferences
+**Sovellus on refaktoroitu täysin uudenlaiseksi!**
 
-### 📱 Käyttöliittymä
-- **Material Design 3**: Moderni ja intuitiivinen käyttöliittymä
-- **Jetpack Compose**: Nopea ja sujuva käyttökokemus
-- **Tumma teema**: Automaattinen tumman teeman tuki
-- **Hakutoiminto**: Nopea salasanojen haku ja suodatus
+### Ennen ❌
+- Tallensi salatut salasanat tietokantaan
+- Käytti AES-salausta
+- Vaati master-salasanan
 
-### 🛠️ Toiminnot
-- **CRUD-toiminnot**: Lisää, muokkaa, poista ja hae salasanoja
-- **Kategoriat**: Järjestä salasanat kategorioittain
-- **Salasanageneraattori**: Luo turvallisia salasanoja automaattisesti
-- **Kopioi leikepöydälle**: Nopea käyttäjänimen ja salasanan kopiointi
-- **Muistiinpanot**: Lisätietoja salasanoille
+### Nyt ✅
+- Tallentaa vain **salasanaprofiileja** (generointisäännöt)
+- Generoi salasanat tarvittaessa PassTool-logiikalla
+- Yhteensopiva PassTool bash-skriptin kanssa
+
+---
+
+## 🛠️ PassTool-yhteensopivuus
+
+Sovellus käyttää samaa logiikkaa kuin PassTool bash-skripti:
+
+```bash
+# PassTool-logiikka
+echo -n "$passphrase" | sha256sum | cut -d' ' -f1 | sed 's/../\\x&/g' | xargs -0 printf | base64
+```
+
+### Kotlin-toteutus
+```kotlin
+fun generatePassword(passphrase: String, length: Int): String {
+    val hash = MessageDigest.getInstance("SHA-256").digest(passphrase.toByteArray())
+    val base64 = Base64.getEncoder().encodeToString(hash)
+    return base64.take(length)
+}
+```
+
+## 📱 Uusi käyttöliittymä
+
+### Pääruutu (ProfileListScreen)
+- Näyttää kaikki salasanaprofiilit
+- Ohjeteksti PassTool-yhteensopivuudesta
+- FAB-painike uuden profiilin lisäämiseen
+
+### Profiilin yksityiskohdat (ProfileDetailScreen)
+- Näyttää profiilin tiedot
+- Passphrase-syöttökenttä
+- Generoi salasanan painikkeesta
+- Kopioi-toiminto leikepöydälle
+
+### Lisää/muokkaa profiilia (AddEditProfileScreen)
+- Perustiedot (otsikko, sivusto, käyttäjä)
+- Salasana-asetukset (pituus, erikoismerkit)
+- Muistiinpanot
+
+## 🗄️ Tietokantamuutokset
+
+### Vanha rakenne (PasswordEntity) ❌
+```kotlin
+data class PasswordEntity(
+    val id: Long,
+    val title: String,
+    val encryptedPassword: String, // Poistettu!
+    // ...
+)
+```
+
+### Uusi rakenne (PasswordProfileEntity) ✅
+```kotlin
+data class PasswordProfileEntity(
+    val id: Long,
+    val title: String,
+    val passwordLength: Int,        // Uusi!
+    val useSpecialChars: Boolean,   // Uusi!
+    val specialChars: String,       // Uusi!
+    // ...
+)
+```
 
 ## Tekninen toteutus
 
@@ -40,49 +95,56 @@ Turvallinen Android-sovellus salasanojen hallintaan, joka tarjoaa modernin käyt
 - **Biometric API**: Biometrinen tunnistautuminen
 - **Security Crypto**: Salaus
 
-### Tietokannan rakenne
+## 🔧 Arkkitehtuurimuutokset
+
+### Poistettu ❌
+- `CryptoManager` (ei tarvita salausta)
+- `PasswordEntity` ja siihen liittyvät
+- Salasanojen tallennus ja haku
+- AES-salaus ja biometrinen tunnistautuminen
+
+### Lisätty ✅
+- `PassToolGenerator` (deterministinen generointi)
+- `PasswordProfile` domain-malli
+- Uudet use caset profiilien hallintaan
+- Uusi UI profiileille
+
+## 🧪 Testit
+
 ```kotlin
-@Entity(tableName = "passwords")
-data class PasswordEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val title: String,
-    val website: String,
-    val username: String,
-    val encryptedPassword: String,
-    val notes: String,
-    val category: String,
-    val createdAt: Long,
-    val updatedAt: Long
-)
+@Test
+fun `generatePassword should be compatible with bash script logic`() {
+    val password = PassToolGenerator.generatePassword("test", 43)
+    val expected = "n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg"
+    assertEquals(expected, password)
+}
 ```
 
-## Asennus ja käyttö
+## 🚀 Käyttö
 
 ### Vaatimukset
 - Android 7.0 (API level 24) tai uudempi
-- Biometrinen tunnistautuminen vaatii tuetun laitteen
+- **Ei vaadi** biometristä tunnistautumista tai master-salasanaa
 
 ### Käyttöönotto
 1. Asenna sovellus Android-laitteeseen
-2. Luo pääsalasana ensimmäisellä käynnistyskerralla
-3. Valitse haluatko käyttää biometristä tunnistautumista
-4. Aloita salasanojen lisääminen
+2. **Ei tarvitse** pääsalasanaa - sovellus käynnistyy suoraan
+3. Aloita profiilien lisääminen
 
 ### Käyttö
-1. **Kirjautuminen**: Syötä pääsalasana tai käytä biometristä tunnistautumista
-2. **Salasanan lisääminen**: Paina + -painiketta ja täytä tiedot
-3. **Salasanan muokkaaminen**: Napauta salasanaa listasta
-4. **Haku**: Käytä hakukenttää löytääksesi salasanoja nopeasti
-5. **Kategoriat**: Suodata salasanoja kategorioittain
+1. **Profiilin lisääminen**: Paina + -painiketta ja määritä asetukset
+2. **Salasanan generointi**: Anna passphrase ja paina "Generoi salasana"
+3. **Kopiointi**: Käytä kopioi-painiketta leikepöydälle
+4. **Muokkaus**: Napauta profiilia listasta
 
-## Tietoturva
+## 🔒 Tietoturva
 
-### Salausmenetelmät
-- **AES-256-GCM**: Symmetrinen salaus salasanoille
-- **PBKDF2**: Pääsalasanan hajautus
-- **Android Keystore**: Salausavainten turvallinen säilytys
-- **EncryptedSharedPreferences**: Asetusten salaus
+### Uusi turvallisuusmalli
+- **Ei tallenneta salasanoja** - vain generointisäännöt
+- **Deterministinen**: Sama passphrase tuottaa aina saman salasanan
+- **PassTool-yhteensopiva**: Voit käyttää samoja profiileja bash-skriptissä
+- **Offline**: Ei vaadi internetyhteyttä
+- **SHA-256**: Kryptografisesti vahva hajautusfunktio
 
 ### Tietosuoja
 - Kaikki tiedot tallennetaan paikallisesti laitteeseen
@@ -90,32 +152,33 @@ data class PasswordEntity(
 - Ei analytiikkaa tai seurantaa
 - Avoimen lähdekoodin toteutus
 
+### ⚠️ Tärkeää
+**Tämä muutos tekee sovelluksesta yhteensopimattoman vanhan version kanssa. Vanhat salatut salasanat eivät ole enää käytettävissä.**
+
 ## Kehitys
 
-### Projektin rakenne
+### Uusi projektin rakenne
 ```
 app/src/main/java/com/passwordmanager/
 ├── data/
-│   ├── database/          # Room-tietokanta
-│   └── repository/        # Tietojen hallinta
+│   ├── database/          # Room-tietokanta (PasswordProfileEntity)
+│   └── repository/        # PasswordProfileRepositoryImpl
 ├── domain/
-│   ├── model/            # Tietomallit
-│   ├── repository/       # Repository-rajapinnat
-│   └── usecase/          # Liiketoimintalogiikka
-├── presentation/
-│   ├── auth/             # Tunnistautuminen
-│   ├── main/             # Pääsivun näkymä
-│   ├── add_edit/         # Salasanan lisäys/muokkaus
-│   ├── components/       # Uudelleenkäytettävät komponentit
-│   └── navigation/       # Navigointi
-├── utils/                # Apuluokat
-└── di/                   # Dependency injection
+│   ├── model/            # PasswordProfile
+│   ├── repository/       # PasswordProfileRepository
+│   └── usecase/profile/  # Profiilin CRUD + generointi
+├── presentation/profile/ # Uudet UI-komponentit
+│   ├── ProfileListScreen.kt
+│   ├── ProfileDetailScreen.kt
+│   └── AddEditProfileScreen.kt
+├── utils/                # PassToolGenerator
+└── di/                   # Päivitetyt moduulit
 ```
 
 ### Testaus
-- Yksikkötestit ViewModeleille
-- Integraatiotestit tietokannalle
-- UI-testit Compose-komponenteille
+- PassToolGenerator-yksikkötestit (yhteensopivuus bash-skriptin kanssa)
+- Profiilin CRUD-toimintojen testit
+- UI-testit uusille Compose-komponenteille
 
 ## Lisenssi
 

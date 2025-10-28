@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Salasanahallinta</string>
+    <string name="master_password">Pääsalasana</string>
+    <string name="enter_master_password">Syötä pääsalasana</string>
+    <string name="unlock">Avaa lukitus</string>
+    <string name="use_biometric">Käytä biometristä tunnistautumista</string>
+    <string name="biometric_prompt_title">Biometrinen tunnistautuminen</string>
+    <string name="biometric_prompt_subtitle">Käytä sormenjälkeäsi tai kasvontunnistusta</string>
+    <string name="biometric_prompt_description">Avaa salasanahallinta biometrisellä tunnistautumisella</string>
+    <string name="cancel">Peruuta</string>
+    <string name="add_password">Lisää salasana</string>
+    <string name="edit_password">Muokkaa salasanaa</string>
+    <string name="delete_password">Poista salasana</string>
+    <string name="website">Verkkosivusto</string>
+    <string name="username">Käyttäjänimi</string>
+    <string name="password">Salasana</string>
+    <string name="notes">Muistiinpanot</string>
+    <string name="category">Kategoria</string>
+    <string name="save">Tallenna</string>
+    <string name="generate_password">Luo salasana</string>
+    <string name="copy_password">Kopioi salasana</string>
+    <string name="copy_username">Kopioi käyttäjänimi</string>
+    <string name="search">Haku</string>
+    <string name="no_passwords">Ei salasanoja</string>
+    <string name="add_first_password">Lisää ensimmäinen salasanasi</string>
+    <string name="password_length">Salasanan pituus</string>
+    <string name="include_uppercase">Sisällytä isot kirjaimet</string>
+    <string name="include_lowercase">Sisällytä pienet kirjaimet</string>
+    <string name="include_numbers">Sisällytä numerot</string>
+    <string name="include_symbols">Sisällytä symbolit</string>
+    <string name="password_copied">Salasana kopioitu</string>
+    <string name="username_copied">Käyttäjänimi kopioitu</string>
+    <string name="delete_confirmation">Haluatko varmasti poistaa tämän salasanan?</string>
+    <string name="delete">Poista</string>
+    <string name="error_empty_fields">Täytä kaikki pakolliset kentät</string>
+    <string name="error_master_password">Väärä pääsalasana</string>
+</resources>

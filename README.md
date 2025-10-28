@@ -132,10 +132,21 @@ fun `generatePassword should be compatible with bash script logic`() {
 3. Aloita profiilien lisääminen
 
 ### Käyttö
+
+#### Perusominaisuudet
 1. **Profiilin lisääminen**: Paina + -painiketta ja määritä asetukset
 2. **Salasanan generointi**: Anna passphrase ja paina "Generoi salasana"
 3. **Kopiointi**: Käytä kopioi-painiketta leikepöydälle
 4. **Muokkaus**: Napauta profiilia listasta
+
+#### 🚀 Autofill-toiminnallisuus (UUSI!)
+1. **Käyttöönotto**: Paina asetukset-ikonia (⚙️) pääsivulla
+2. **Aktivointi**: Siirry Android-asetuksiin ja valitse "Salasanahallinta" autofill-palveluksi
+3. **Käyttö**: Kun kirjaudut toiseen sovellukseen tai sivustolle:
+   - Näet profiilivaihtoehdot autofill-ehdotuksissa
+   - Valitse sopiva profiili
+   - Syötä passphrase
+   - Salasana generoidaan ja täytetään automaattisesti!
 
 ## 🔒 Tietoturva
 
@@ -145,6 +156,7 @@ fun `generatePassword should be compatible with bash script logic`() {
 - **PassTool-yhteensopiva**: Voit käyttää samoja profiileja bash-skriptissä
 - **Offline**: Ei vaadi internetyhteyttä
 - **SHA-256**: Kryptografisesti vahva hajautusfunktio
+- **Autofill-turvallisuus**: Passphrase pysyy muistissa vain generoinnin ajan
 
 ### Tietosuoja
 - Kaikki tiedot tallennetaan paikallisesti laitteeseen
@@ -160,6 +172,9 @@ fun `generatePassword should be compatible with bash script logic`() {
 ### Uusi projektin rakenne
 ```
 app/src/main/java/com/passwordmanager/
+├── autofill/             # 🆕 Autofill-toiminnallisuus
+│   ├── PasswordManagerAutofillService.kt
+│   └── AutofillActivity.kt
 ├── data/
 │   ├── database/          # Room-tietokanta (PasswordProfileEntity)
 │   └── repository/        # PasswordProfileRepositoryImpl
@@ -167,10 +182,9 @@ app/src/main/java/com/passwordmanager/
 │   ├── model/            # PasswordProfile
 │   ├── repository/       # PasswordProfileRepository
 │   └── usecase/profile/  # Profiilin CRUD + generointi
-├── presentation/profile/ # Uudet UI-komponentit
-│   ├── ProfileListScreen.kt
-│   ├── ProfileDetailScreen.kt
-│   └── AddEditProfileScreen.kt
+├── presentation/
+│   ├── profile/          # Profiilin hallinta UI
+│   └── settings/         # 🆕 AutofillSettingsActivity
 ├── utils/                # PassToolGenerator
 └── di/                   # Päivitetyt moduulit
 ```
@@ -179,6 +193,13 @@ app/src/main/java/com/passwordmanager/
 - PassToolGenerator-yksikkötestit (yhteensopivuus bash-skriptin kanssa)
 - Profiilin CRUD-toimintojen testit
 - UI-testit uusille Compose-komponenteille
+- Autofill-palvelun testaus eri sovelluksissa ja web-sivuilla
+
+### 🆕 Autofill-ominaisuudet
+- **Kenttien tunnistus**: Automaattinen käyttäjänimi- ja salasanakentien tunnistus
+- **Profiilin valinta**: Älykkäät ehdotukset package namen ja domain nimen perusteella
+- **Turvallinen syöttö**: Passphrase-syöttö suojatulla käyttöliittymällä
+- **Android-integraatio**: Täysi tuki Android Autofill Framework:lle
 
 ## Lisenssi
 

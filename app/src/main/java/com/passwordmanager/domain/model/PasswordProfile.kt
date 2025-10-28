@@ -1,11 +1,10 @@
-package com.passwordmanager.data.database
+package com.passwordmanager.domain.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "password_profiles")
-data class PasswordProfileEntity(
-    @PrimaryKey(autoGenerate = true)
+/**
+ * Salasanaprofiili - tallentaa vain tiedon salasanan generointisäännöistä,
+ * ei itse salasanaa (PassTool-yhteensopiva)
+ */
+data class PasswordProfile(
     val id: Long = 0,
     val title: String,
     val website: String,

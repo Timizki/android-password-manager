@@ -2,7 +2,7 @@ package com.passwordmanager.di
 
 import android.content.Context
 import androidx.room.Room
-import com.passwordmanager.data.database.PasswordDao
+import com.passwordmanager.data.database.PasswordProfileDao
 import com.passwordmanager.data.database.PasswordDatabase
 import dagger.Module
 import dagger.Provides
@@ -22,11 +22,12 @@ object DatabaseModule {
             context,
             PasswordDatabase::class.java,
             PasswordDatabase.DATABASE_NAME
-        ).build()
+        ).fallbackToDestructiveMigration() // Sallii tietokannan uudelleenluonnin
+        .build()
     }
     
     @Provides
-    fun providePasswordDao(database: PasswordDatabase): PasswordDao {
-        return database.passwordDao()
+    fun providePasswordProfileDao(database: PasswordDatabase): PasswordProfileDao {
+        return database.passwordProfileDao()
     }
 }

@@ -4,32 +4,32 @@ import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface PasswordDao {
+interface PasswordProfileDao {
     
-    @Query("SELECT * FROM passwords ORDER BY updatedAt DESC")
-    fun getAllPasswords(): Flow<List<PasswordEntity>>
+    @Query("SELECT * FROM password_profiles ORDER BY updatedAt DESC")
+    fun getAllProfiles(): Flow<List<PasswordProfileEntity>>
     
-    @Query("SELECT * FROM passwords WHERE id = :id")
-    suspend fun getPasswordById(id: Long): PasswordEntity?
+    @Query("SELECT * FROM password_profiles WHERE id = :id")
+    suspend fun getProfileById(id: Long): PasswordProfileEntity?
     
-    @Query("SELECT * FROM passwords WHERE title LIKE '%' || :query || '%' OR website LIKE '%' || :query || '%' OR username LIKE '%' || :query || '%'")
-    fun searchPasswords(query: String): Flow<List<PasswordEntity>>
+    @Query("SELECT * FROM password_profiles WHERE title LIKE '%' || :query || '%' OR website LIKE '%' || :query || '%' OR username LIKE '%' || :query || '%'")
+    fun searchProfiles(query: String): Flow<List<PasswordProfileEntity>>
     
-    @Query("SELECT * FROM passwords WHERE category = :category ORDER BY updatedAt DESC")
-    fun getPasswordsByCategory(category: String): Flow<List<PasswordEntity>>
+    @Query("SELECT * FROM password_profiles WHERE category = :category ORDER BY updatedAt DESC")
+    fun getProfilesByCategory(category: String): Flow<List<PasswordProfileEntity>>
     
-    @Query("SELECT DISTINCT category FROM passwords ORDER BY category")
+    @Query("SELECT DISTINCT category FROM password_profiles ORDER BY category")
     fun getAllCategories(): Flow<List<String>>
     
     @Insert
-    suspend fun insertPassword(password: PasswordEntity): Long
+    suspend fun insertProfile(profile: PasswordProfileEntity): Long
     
     @Update
-    suspend fun updatePassword(password: PasswordEntity)
+    suspend fun updateProfile(profile: PasswordProfileEntity)
     
     @Delete
-    suspend fun deletePassword(password: PasswordEntity)
+    suspend fun deleteProfile(profile: PasswordProfileEntity)
     
-    @Query("DELETE FROM passwords WHERE id = :id")
-    suspend fun deletePasswordById(id: Long)
+    @Query("DELETE FROM password_profiles WHERE id = :id")
+    suspend fun deleteProfileById(id: Long)
 }

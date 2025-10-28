@@ -6,13 +6,13 @@ import androidx.room.RoomDatabase
 import android.content.Context
 
 @Database(
-    entities = [PasswordEntity::class],
-    version = 1,
+    entities = [PasswordProfileEntity::class],
+    version = 2,
     exportSchema = true
 )
 abstract class PasswordDatabase : RoomDatabase() {
     
-    abstract fun passwordDao(): PasswordDao
+    abstract fun passwordProfileDao(): PasswordProfileDao
     
     companion object {
         const val DATABASE_NAME = "password_database"

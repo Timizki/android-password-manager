@@ -1,7 +1,7 @@
 package com.passwordmanager.di
 
-import com.passwordmanager.data.repository.PasswordRepositoryImpl
-import com.passwordmanager.domain.repository.PasswordRepository
+import com.passwordmanager.data.repository.PasswordProfileRepositoryImpl
+import com.passwordmanager.domain.repository.PasswordProfileRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,7 +14,7 @@ abstract class RepositoryModule {
     
     @Binds
     @Singleton
-    abstract fun bindPasswordRepository(
-        passwordRepositoryImpl: PasswordRepositoryImpl
-    ): PasswordRepository
+    abstract fun bindPasswordProfileRepository(
+        passwordProfileRepositoryImpl: PasswordProfileRepositoryImpl
+    ): PasswordProfileRepository
 }

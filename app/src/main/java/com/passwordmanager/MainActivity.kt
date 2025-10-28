@@ -13,9 +13,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.passwordmanager.presentation.add_edit.AddEditPasswordScreen
-import com.passwordmanager.presentation.auth.AuthScreen
-import com.passwordmanager.presentation.main.MainScreen
+import com.passwordmanager.presentation.profile.ProfileListScreen
+import com.passwordmanager.presentation.profile.ProfileDetailScreen
+import com.passwordmanager.presentation.profile.AddEditProfileScreen
 import com.passwordmanager.presentation.navigation.Screen
 import com.passwordmanager.ui.theme.PasswordManagerTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,41 +43,60 @@ fun PasswordManagerApp() {
     
     NavHost(
         navController = navController,
-        startDestination = Screen.Auth.route
+        startDestination = "profile_list"
     ) {
-        composable(Screen.Auth.route) {
-            AuthScreen(
-                onAuthenticated = {
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.Auth.route) { inclusive = true }
-                    }
+        composable("profile_list") {
+            ProfileListScreen(
+                onNavigateToAddProfile = {
+                    navController.navigate("add_profile")
+                },
+                onNavigateToProfile = { profileId ->
+                    navController.navigate("profile_detail/$profileId")
                 }
             )
         }
         
-        composable(Screen.Main.route) {
-            MainScreen(
-                onNavigateToAddPassword = {
-                    navController.navigate(Screen.AddEditPassword.route)
-                },
-                onNavigateToEditPassword = { passwordId ->
-                    navController.navigate(Screen.AddEditPassword.withArgs(passwordId.toString()))
+        composable("add_profile") {
+            AddEditProfileScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }
         
         composable(
-            route = Screen.AddEditPassword.route + "?passwordId={passwordId}",
+            route = "edit_profile/{profileId}",
             arguments = listOf(
-                navArgument("passwordId") {
+                navArgument("profileId") {
                     type = NavType.LongType
-                    defaultValue = -1L
                 }
             )
-        ) {
-            AddEditPasswordScreen(
+        ) { backStackEntry ->
+            val profileId = backStackEntry.arguments?.getLong("profileId") ?: 0L
+            AddEditProfileScreen(
+                profileId = profileId,
                 onNavigateBack = {
                     navController.popBackStack()
+                }
+            )
+        }
+        
+        composable(
+            route = "profile_detail/{profileId}",
+            arguments = listOf(
+                navArgument("profileId") {
+                    type = NavType.LongType
+                }
+            )
+        ) { backStackEntry ->
+            val profileId = backStackEntry.arguments?.getLong("profileId") ?: 0L
+            ProfileDetailScreen(
+                profileId = profileId,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToEdit = { id ->
+                    navController.navigate("edit_profile/$id")
                 }
             )
         }

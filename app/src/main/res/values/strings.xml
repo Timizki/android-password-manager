@@ -35,4 +35,11 @@
     <string name="delete">Poista</string>
     <string name="error_empty_fields">Täytä kaikki pakolliset kentät</string>
     <string name="error_master_password">Väärä pääsalasana</string>
+    
+    <!-- Autofill strings -->
+    <string name="autofill_service_description">Täyttää automaattisesti salasanoja muissa sovelluksissa PassTool-yhteensopivalla generaattorilla</string>
+    <string name="autofill_settings_title">Autofill-asetukset</string>
+    <string name="autofill_enable_title">Ota autofill käyttöön</string>
+    <string name="autofill_enable_description">Salli sovelluksen täyttää salasanoja automaattisesti muissa sovelluksissa</string>
+    <string name="autofill_go_to_settings">Siirry asetuksiin</string>
 </resources>

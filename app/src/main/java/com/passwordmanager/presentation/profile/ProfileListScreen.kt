@@ -1,19 +1,23 @@
 package com.passwordmanager.presentation.profile
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.passwordmanager.domain.model.PasswordProfile
+import com.passwordmanager.presentation.settings.AutofillSettingsActivity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,11 +27,22 @@ fun ProfileListScreen(
     viewModel: ProfileListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Salasanaprofiilit") }
+                title = { Text("Salasanaprofiilit") },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            val intent = Intent(context, AutofillSettingsActivity::class.java)
+                            context.startActivity(intent)
+                        }
+                    ) {
+                        Icon(Icons.Default.Settings, contentDescription = "Autofill-asetukset")
+                    }
+                }
             )
         },
         floatingActionButton = {
